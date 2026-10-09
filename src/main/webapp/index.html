@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link href="css/style.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Обмен валют</title>
+</head>
+<body>
+<main>
+    <h1>Обмен валют</h1>
+
+    <nav aria-label="Разделы приложения" class="navigation">
+        <button
+                aria-controls="exchange-panel"
+                aria-pressed="true"
+                class="navigation-button"
+                data-panel="exchange-panel"
+                type="button"
+        >
+            Обмен
+        </button>
+
+        <button
+                aria-controls="currencies-panel"
+                aria-pressed="false"
+                class="navigation-button"
+                data-panel="currencies-panel"
+                type="button"
+        >
+            Валюты
+        </button>
+
+        <button
+                aria-controls="rates-panel"
+                aria-pressed="false"
+                class="navigation-button"
+                data-panel="rates-panel"
+                type="button"
+        >
+            Курсы
+        </button>
+    </nav>
+
+    <p id="status" role="status"></p>
+
+    <section hidden id="details-section">
+        <h2>Результат операции</h2>
+        <div id="data-output"></div>
+    </section>
+
+    <div class="panel" id="exchange-panel">
+        <section>
+            <h2>Рассчитать обмен</h2>
+
+            <form id="exchange-form">
+                <label>
+                    Из валюты
+                    <input
+                            maxlength="3"
+                            name="from"
+                            pattern="[A-Z]{3}"
+                            placeholder="USD"
+                            required
+                            value="USD"
+                    >
+                </label>
+
+                <label>
+                    В валюту
+                    <input
+                            maxlength="3"
+                            name="to"
+                            pattern="[A-Z]{3}"
+                            placeholder="EUR"
+                            required
+                            value="EUR"
+                    >
+                </label>
+
+                <label>
+                    Сумма
+                    <input
+                            max="999999999999.999999"
+                            min="0"
+                            name="amount"
+                            required
+                            step="0.000001"
+                            type="number"
+                            value="100"
+                    >
+                </label>
+
+                <button type="submit">Рассчитать</button>
+            </form>
+
+            <p aria-live="polite" id="exchange-result"></p>
+        </section>
+    </div>
+
+    <div class="panel" hidden id="currencies-panel">
+        <section>
+            <div class="section-heading">
+                <h2>Валюты</h2>
+
+                <button id="currencies-button" type="button">
+                    Обновить список
+                </button>
+            </div>
+
+            <div class="table-container" id="currencies-table">
+                Нажмите «Обновить список».
+            </div>
+        </section>
+        <section>
+            <h2>Добавить валюту</h2>
+
+            <form id="currency-form">
+                <label>
+                    Код валюты
+                    <input
+                            maxlength="3"
+                            name="code"
+                            pattern="[A-Z]{3}"
+                            placeholder="CHF"
+                            required
+                    >
+                </label>
+
+                <label>
+                    Название
+                    <input
+                            name="name"
+                            placeholder="Swiss franc"
+                            required
+                    >
+                </label>
+
+                <label>
+                    Символ
+                    <input
+                            name="sign"
+                            placeholder="Fr."
+                            required
+                    >
+                </label>
+
+                <button type="submit">Добавить валюту</button>
+            </form>
+        </section>
+        <section>
+            <h2>Найти валюту</h2>
+
+            <form id="find-currency-form">
+                <label>
+                    Код валюты
+                    <input
+                            maxlength="3"
+                            name="code"
+                            pattern="[A-Z]{3}"
+                            placeholder="USD"
+                            required
+                    >
+                </label>
+
+                <button type="submit">Найти валюту</button>
+            </form>
+        </section>
+    </div>
+    <div id="rates-panel" class="panel" hidden>
+        <section>
+            <div class="section-heading">
+                <h2>Обменные курсы</h2>
+
+                <button id="rates-button" type="button">
+                    Обновить список
+                </button>
+            </div>
+
+            <div id="rates-table" class="table-container">
+                Нажмите «Обновить список».
+            </div>
+        </section>
+    <section>
+        <h2>Добавить курс</h2>
+
+        <form id="rate-form">
+            <label>
+                Базовая валюта
+                <select data-currency-select name="baseCurrencyCode" required>
+                    <option value="">Загрузка валют…</option>
+                </select>
+            </label>
+
+            <label>
+                Целевая валюта
+                <select data-currency-select name="targetCurrencyCode" required>
+                    <option value="">Загрузка валют…</option>
+                </select>
+            </label>
+
+            <label>
+                Курс за одну единицу базовой валюты
+                <input
+                        max="999999.999999"
+                        min="0.000001"
+                        name="rate"
+                        placeholder="0.95"
+                        required
+                        step="0.000001"
+                        type="number"
+                >
+            </label>
+
+            <button type="submit">Добавить курс</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Изменить курс</h2>
+
+        <form id="update-rate-form">
+            <label>
+                Базовая валюта
+                <select data-currency-select name="baseCurrencyCode" required>
+                    <option value="">Загрузка валют…</option>
+                </select>
+            </label>
+
+            <label>
+                Целевая валюта
+                <select data-currency-select name="targetCurrencyCode" required>
+                    <option value="">Загрузка валют…</option>
+                </select>
+            </label>
+
+            <label>
+                Новый курс
+                <input
+                        max="999999.999999"
+                        min="0.000001"
+                        name="rate"
+                        required
+                        step="0.000001"
+                        type="number"
+                >
+            </label>
+
+            <button type="submit">Сохранить курс</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Найти курс</h2>
+
+        <form id="find-rate-form">
+            <label>
+                Базовая валюта
+                <select data-currency-select name="baseCurrencyCode" required>
+                    <option value="">Загрузка валют…</option>
+                </select>
+            </label>
+
+            <label>
+                Целевая валюта
+                <select data-currency-select name="targetCurrencyCode" required>
+                    <option value="">Загрузка валют…</option>
+                </select>
+            </label>
+
+            <button type="submit">Найти курс</button>
+        </form>
+    </section>
+    </div>
+</main>
+<script src="js/app.js" type="module"></script>
+</body>
+</html>
